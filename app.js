@@ -7,6 +7,11 @@ var mongoose = require('mongoose');
 var app = express();
 
 
+//Importar Rutas
+var appRoutes = require('./routes/app');
+var userRoutes = require('./routes/user');
+
+
 //Conexion a la Base de Datos
 mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', ( error, response) =>{
     if (error) throw error;
@@ -15,14 +20,9 @@ mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', ( error, res
 });
 
 
-//Rutas
-app.get('/', (request, response, next) => {
-
-    response.status(200).json({
-        ok: true,
-        mensaje: 'Peticion realizada correctamente'
-    });
-});
+//Rutas (Middleware)
+app.use('/user', userRoutes);
+app.use('/', appRoutes);
 
 
 //Escuchar peticiones
