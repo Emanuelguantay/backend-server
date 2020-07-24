@@ -2,11 +2,15 @@
 var express = require('express');
 var app = express();
 
-var Usuario = require('../models/user');
+//Model User
+var User = require('../models/user');
 
+//===========================
+//Obtener todos los usuarios
+//============================
 app.get('/', (request, response, next) => {
 
-    Usuario.find({}, 'name email img role')
+    User.find({}, 'name email img role')
         .exec(
             (err, users) => {
                 if (err){
@@ -23,6 +27,35 @@ app.get('/', (request, response, next) => {
                 })
             }
         )
+});
+
+//===========================
+//Crear usuario POST
+//============================
+app.post('/',(req, resp)=>{
+    var body = req.body;
+    var user = new User({
+        name: body.name,
+        email: body.email,
+        password: body.password,
+        img: body.img,
+        role: body.role
+    });
+
+    user.save( (err, userSave) =>{
+        if (err){
+            return resp.status(500).json({
+                ok: false,
+                mensaje: 'Error al crear Users',
+                errors: err
+            });
+        }
+
+        resp.status(201).json({
+            ok: true,
+            usuarios: userSave
+        })
+    });
 });
 
 module.exports = app;
