@@ -111,4 +111,34 @@ app.post('/',(req, resp)=>{
     });
 });
 
+//===========================
+//Eliminar usuario DELETE
+//============================
+app.delete('/:id', (req,resp)=>{
+    var id = req.params.id;
+    User.findByIdAndRemove(id, ( err, userRemove) =>{
+        if (err){
+            return resp.status(500).json({
+                ok: false,
+                mensaje: 'Error al borrar Users',
+                errors: err
+            });
+        }
+
+        if (!userRemove){
+            return resp.status(400).json({
+                ok: false,
+                mensaje: 'No existe usuario con ese id',
+                errors: {message: 'No existe usuario con ese id'}
+            });
+        }
+
+        resp.status(200).json({
+            ok: true,
+            usuarios: userRemove
+        });
+    })
+});
+
+
 module.exports = app;
